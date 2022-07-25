@@ -99,9 +99,23 @@ function getFastestPromise(array) {
  *    });
  *
  */
-function chainPromises(/* array, action */) {
-  throw new Error('Not implemented');
+function chainPromises(array, action) {
+  const resolvedList = [];
+  array.forEach((promise) => {
+    promise.then((value) => resolvedList.push(value)).catch(() => new Error());
+  });
+  return new Promise((resolve) => {
+    resolve(resolvedList);
+  })
+    .then((res) => res.reduce(action));
 }
+
+//  return Promise.allSettled(array)
+//    .then((promisesList) => promisesList
+//      .filter((promise) => promise.status === 'fulfilled')
+//      .map((promise) => promise.value)
+//     .reduce(action));
+
 
 module.exports = {
   willYouMarryMe,
