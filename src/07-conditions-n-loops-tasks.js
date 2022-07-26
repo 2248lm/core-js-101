@@ -73,9 +73,7 @@ function getFactorial(n) {
  */
 function getSumBetweenNumbers(n1, n2) {
   let sum = 0;
-  for (let i = n1; i <= n2; i += 1) {
-    sum += i;
-  }
+  for (let i = n1; i <= n2; i += 1) sum += i;
   return sum;
 }
 
@@ -336,8 +334,20 @@ function getDigitalRoot(num) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  const brackets = '[](){}<>';
+  const stack = [];
+  for (let i = 0; i < str.length; i += 1) {
+    const bracketIdx = brackets.indexOf(str[i]);
+    if (bracketIdx !== -1) {
+      if (bracketIdx % 2) {
+        if (stack.pop() !== bracketIdx) return false;
+      } else {
+        stack.push(bracketIdx + 1);
+      }
+    }
+  }
+  return stack.length === 0;
 }
 
 
@@ -378,8 +388,25 @@ function toNaryString(num, n) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  let r = pathes.map((file) => file.slice(0, (file.lastIndexOf('/') + 1)));
+  let set = [...new Set(r)];
+  const check = (arr) => {
+    if (arr.length > 1) {
+      const min = Math.min(...arr.map((file) => file.length));
+      r = r.map((file) => file.slice(0, min));
+      set = [...new Set(r)];
+      r = set.map((file) => (file.lastIndexOf('/') !== -1 ? file.slice(0, (file.lastIndexOf('/'))) : file));
+      const t = r.map((file) => (file === '' ? '/' : file));
+      set = [...new Set(t)];
+      if (set.length > 1) {
+        if (set.length === t.length) set = [''];
+        else check(set);
+      }
+    }
+  };
+  check(set);
+  return set[0];
 }
 
 
